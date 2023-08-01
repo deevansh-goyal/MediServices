@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Bootstrap demo</title>
+    <script src="script/angular.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+    <script>
+        var module = angular.module("myModule", []);
+        module.controller("myController", function ($scope, $http) {
+            $scope.cityJson;
+            $scope.selObj="";
+            $scope.doShowDisCities = function () {
+                var url = "/get-cities";
+                $http.get(url).then(done, fail);
+                function done(response) {
+
+                    $scope.cityJson = response.data;
+                    
+                }
+                function fail(response) {
+                    alert(response.data);
+                }
+
+                //AJAX Request
+            }
+            $scope.medJson;
+            $scope.selObjMed = "";
+            $scope.doShowDisMeds = function () {
+                var url = "/get-med";
+                $http.get(url).then(done, fail);
+                function done(response) {
+
+                    $scope.medJson = response.data;
+                    
+                }
+                function fail(response) {
+                    alert(response.data);
+                }
+
+                //AJAX Request
+            }
+            $scope.fetchDonors=function()
+            {
+                var url="/fetch-donors?medKuch="+$scope.selObjMed.med+"&cityKuch="+$scope.selObj.city;
+                
+                $http.get(url).then(done,fail);
+                    function done(response)
+                        {
+                            
+                            $scope.JsonArr3=response.data;
+                        }
+                     function fail(response)
+                        {
+                            alert(response.data);
+                        }
+            }
+            $scope.fetchdetailsdonors=function(selIndex)
+                    {
+                            $scope.selOneObj=$scope.JsonArr3[selIndex];
+                            $("#imgdet").prop("src","/uploads/"+$scope.selOneObj.idpicname);
+                            $scope.namedet=$scope.selOneObj.name;
+                            $scope.adddet=$scope.selOneObj.address;
+                            $scope.condet=$scope.selOneObj.contact;
+                            $scope.dobdet=$scope.selOneObj.dob;
+                            $scope.gendet=$scope.selOneObj.gender;
+                            $scope.fromdet=$scope.selOneObj.hourfrom;
+                            $scope.todet=$scope.selOneObj.hourto;
+
+                    }
+            function setActiveUser()
+        {
+          var au=localStorage.getItem("activeKuch");
+          // alert(au);
+          $("#spanWelcome").html("Welcome "+au);
+        }
+    setActiveUser();
+
+        })
+    </script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
+</head>
+
+<body ng-app="myModule" ng-controller="myController" ng-init="doShowDisCities();doShowDisMeds();">
+    <nav class="navbar" style="background-color: tomato;">
+        <div class="container-fluid" >
+          <a class="navbar-brand" href="#">
+            <img src="pics/logo11.png" alt="Logo" width="30" height="24" class="d-inline-block align-text-top">
+            <h4 style="color: white;font-family:cursive;display: inline;text-shadow: 5px 5px 5px black;">MediServices</h4>
+          </a>
+            <div id="spanWelcome" style="float: right;color: white;"></div>
+        </div>
+    </nav>
+    <br>
+    <center>
+        <div class="container">
+            <div style="font-size:xx-large;"><b><center>MEDS AVAILABLE</center></b></div><br><br>
+        <div class="row">
+            <div class="col-md-3 offset-3">
+                <label class="label" for=""><b>CITIES:</b></label>
+                <select class="form-select" ng-options="obj.city for obj in cityJson" ng-model="selObj">
+                    <option value="" selected disabled>Select</option>
+                </select>
+            </div>
+            <div class="col-md-3">
+                <label class="label" for=""> <b>MEDS:</b></label>
+                <select class="form-select" ng-options="obj.med for obj in medJson" ng-model="selObjMed">
+                    <option value="" selected disabled>Select</option>
+                </select>
+            </div>
+        </div>
+        <div class="row mt-3">
+            <div class="col-md-5 offset-3">
+                <div class="col-md-4 mt-5"><input type="button" class="btn btn-outline-success" value="Get DONORS" ng-click="fetchDonors();" style="width: 300px"></div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-3" ng-repeat="obj in JsonArr3">
+                <div class="card" >
+                    <img src="/uploads/{{obj.idpicname}}" class="card-img-top" style="height: 200px;margin-bottom: 20px;" alt="..."ng-model="picpath">
+                    <div class="card-body">
+                      <h5 class="card-title">{{obj.name}}</h5>
+                      <hr>
+                      <p class="card-text"><b>ADDRESS</b> - {{obj.address}}</p>
+                      <hr>
+                      <p class="card-text"><b>CITY</b> - {{obj.city}}</p>
+                      <hr>
+                      <p class="card-text"><b>MED NAME</b> - {{obj.med}}</p>
+                      <hr>
+                      <button type="button" class="btn btn-outline-success" data-bs-toggle="modal" data-bs-target="#detailsdonor" ng-click="fetchdetailsdonors($index);">Details</button>
+                    </div>
+                  </div>
+            </div>
+        </div>
+        <br>
+    </div>
+    </center>
+    <div class="modal fade" id="detailsdonor" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h1 class="modal-title fs-5" id="exampleModalLabel">DONOR'S DETAIL</h1>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <img alt="no pic uploaded"  id="imgdet" width="200px" height="200px" style="margin-left: 120px;border-radius: 50%;">
+                <p></p>
+                Name - <input  style="border: none;" type="text" ng-model="namedet" readonly><hr>
+                Address - <input type="text" style="border: none;" ng-model="adddet" readonly><hr>
+                Contact No. - <input type="text" style="border: none;" ng-model="condet" readonly><hr>
+                Date Of Birth - <input type="text" style="border: none;" ng-model="dobdet" readonly><hr>
+                gender - <input type="text" style="border: none;" ng-model="gendet" readonly><hr>
+                Available from - <input type="text" style="border: none;"ng-model="fromdet" readonly><hr>
+                Available to - <input type="text" style="border: none;"ng-model="todet" readonly>
+            </div>
+            <div class="modal-footer">
+              <button type="button" style="margin-right: 220px;" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz"
+        crossorigin="anonymous"></script>
+</body>
+
+</html>

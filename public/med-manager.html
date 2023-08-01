@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script src="script/angular.min.js"></script>
+  <script>
+    var module = angular.module("myModule", []);
+    module.controller("myController", function ($scope, $http) {
+      $scope.jsonArray;
+      $scope.email;
+      $scope.fetchRec = function () {
+        var url = "/fetch-records-med-man?emailkuch=" + $scope.email;
+        $http.get(url).then(done, fail);
+        function done(response) {
+          $scope.jsonArray = response.data;
+
+        }
+        function fail(response) {
+          alert(response.data);
+        }
+      }
+      $scope.dodelete = function (srno) {
+        if (confirm("R U Sure?") == false)
+          return;
+        var url = "/do-angular-med-delete?srkuch=" + srno;
+        $http.get(url).then(done, fail);
+        function done(response) {
+          alert(response.data);
+          $scope.fetchRec();
+
+        }
+        function fail(response) {
+          alert(response.data);
+        }
+
+      }
+      $scope.setActiveUser=function() {
+        var au = localStorage.getItem("activeKuch");
+        $scope.email=au;
+      }
+      
+
+    })
+  </script>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
+</head>
+
+<body ng-app="myModule" ng-controller="myController" ng-init="setActiveUser();">
+  <nav class="navbar" style="background-color: tomato;">
+    <div class="container-fluid" >
+      <a class="navbar-brand" href="#">
+        <img src="pics/logo11.png" alt="Logo" width="30" height="24" class="d-inline-block align-text-top">
+        <h4 style="color: white;font-family:cursive;display: inline;text-shadow: 5px 5px 5px black;">MediServices</h4>
+      </a>
+      <div id="spanWelcome" style="float: right;color: white;"></div>
+    </div>
+  </nav>
+  <br>
+  <center>
+    <label for="">Email ID</label>
+    <input type="text" ng-model="email" readonly>
+    <input type="button" class="btn btn-dark" value="Get Record" ng-click="fetchRec();">
+    <br>
+    <table class="table table-stripped">
+      <tr>
+        <th>Sr.No</th>
+        <th>Med. Name</th>
+        <th>Packing</th>
+        <th>Expiry Date</th>
+        <th>Quantity</th>
+        <th>Operations</th>
+      <tr ng-repeat="obj in jsonArray">
+        <td>{{$index+1}}</td>
+        <td>{{obj.med}}</td>
+        <td>{{obj.packing}}</td>
+        <td>{{obj.expdate}}</td>
+        <td>{{obj.qty}}</td>
+        <td align="left">
+          <input class="btn btn-outline-dark" type="button" value="Unavail" ng-click="dodelete(obj.srno);">
+        </td>
+      </tr>
+      </tr>
+
+    </table>
+  </center>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz"
+    crossorigin="anonymous"></script>
+</body>
+
+</html>

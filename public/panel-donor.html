@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Bootstrap demo</title>
+    <script src="script/angular.min.js"></script>
+    <script>
+
+var module=angular.module("myModule",[]);
+        module.controller("myController",function($scope,$http){
+            $scope.jsonArray;
+            $scope.fetchRecords=function()
+                {
+                    var url="/fetch-records-panel-donors";
+                    $http.get(url).then(done,fail);
+                    function done(response)
+                        {
+                            $scope.jsonArray=response.data;
+
+                        }
+                     function fail(response)
+                        {
+                                alert(response.data);
+                        }   
+                }
+                
+            
+        })
+
+    </script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
+  </head>
+  <body ng-app="myModule" ng-controller="myController">
+    <nav class="navbar" style="background-color: tomato;">
+      <div class="container-fluid" >
+        <a class="navbar-brand" href="#">
+          <img src="pics/logo11.png" alt="Logo" width="30" height="24" class="d-inline-block align-text-top">
+          <h4 style="color: white;font-family:cursive;display: inline;text-shadow: 5px 5px 5px black;">MediServices</h4>
+        </a>
+        </div>
+      </nav>
+      <center>
+        <h2 style="font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;margin-top: 30px;margin-bottom: 30px;">
+            Donors Panel
+        </h2>
+      </center>
+      <center>
+        <input class="btn btn-dark" style="padding: 5px 20px 5px 20px;margin-top: 30px;margin-bottom: 30px;" type="button" ng-click="fetchRecords();" value="Fetch all Users">
+         <table class="table table-stripped">
+                <tr>
+                    <th>Sr.No</th> <th>Email id</th> <th>Name</th><th>Contact</th><th>Address</th><th>City</th><th>Date Of Birth</th><th>Gender</th><th>ID</th><th>Pic Name</th><th>Available from</th><th>Available to</th>
+                    <tr ng-repeat="obj in jsonArray">
+                        <td>{{$index+1}}</td>
+                        <td>{{obj.emailid}}</td>
+                        <td>{{obj.name}}</td>
+                        <td>{{obj.contact}}</td>
+                        <td>{{obj.address}}</td>
+                        <td>{{obj.city}}</td>
+                        <td>{{obj.dob}}</td>
+                        <td>{{obj.gender}}</td>
+                        <td>{{obj.id}}</td>
+                        <td>{{obj.idpicname}}</td>
+                        <td>{{obj.hourfrom}}</td>
+                        <td>{{obj.hourto}}</td>
+                    </tr>
+                </tr>
+
+         </table>
+      </center>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz" crossorigin="anonymous"></script>
+  </body>
+</html>

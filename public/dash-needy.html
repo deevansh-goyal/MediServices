@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Bootstrap demo</title>
+    <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+    <script>
+      $(document).ready(function(){
+
+        $("#logout").click(function(){
+          localStorage.setItem("activeKuch",null);
+          location.href="index.html";
+          
+        })
+        $("#updatepwdneedy").click(function(){
+                var emailku = $("#txtemail").val();
+                var oldpwd=$("#txtoldpwd").val();
+                var newpwd=$("#txtnewpwd").val();
+                var cnfpwd=$("#txtcnfpwd").val();
+
+                var obj={
+                  type:'get',
+                  url:"/updatepwd-needy",
+                  data:{
+                    setemail:emailku,
+                    setoldp:oldpwd,
+                    setnewp:newpwd,
+                    setcnfp:cnfpwd
+                  }
+                }
+                $.ajax(obj).done(function(resp){
+                  alert(JSON.stringify(resp));
+                }).fail(function (err) {
+                    alert(err); 
+                })
+                
+        });
+        function setActiveUser()
+        {
+          
+          var au=localStorage.getItem("activeKuch");
+          if(au==null)
+          {
+            location.href="index.html";
+            return;
+          }
+          // alert(au);
+          $("#spanWelcome").html("Welcome "+au);
+          $("#txtemail").val(au).prop("readonly",true);
+        }
+    setActiveUser();
+      })
+    </script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
+  </head>
+  <body>
+    <nav class="navbar" style="background-color: tomato;">
+      <div class="container-fluid" >
+        <a class="navbar-brand" href="#">
+          <img src="pics/logo11.png" alt="Logo" width="30" height="24" class="d-inline-block align-text-top">
+          <h4 style="color: white;font-family:cursive;display: inline;text-shadow: 5px 5px 5px black;">MediServices</h4>
+        </a>
+          <div id="spanWelcome" style="float: right;color: white;"></div>
+        </div>
+      </nav>
+      <div class="container-fluid">
+
+        <div style="margin-top:20px ;" class="row">
+        <div class="col-md-10 offset-1" style="border: 1px;">
+            <div class="col-md-2 card" style="border-color: black;width: 16rem;float: left;margin-left: 30px;border-radius: 5%;box-shadow: 0px 0px 15px 5px gray;" >
+                <img style="width: 150px;height: 150px;margin: 30px 30px 40px 40px;" class="img-card-top"src="pics/details.png"  alt="">
+                <div class="card-body" >
+                  <center><a href="/profile-needy" class="btn btn-outline-dark">Details</a></center>
+                </div>
+              </div>
+              <div class="col-md-3 card" style="border-color: black;width: 16rem;float: left;margin-left: 30px;border-radius: 5%;box-shadow: 0px 0px 15px 5px gray;" >
+                <img style="width: 150px;height: 150px;margin: 30px 30px 40px 40px;" class="img-card-top"src="pics/find-med.png"  alt="">
+                <div class="card-body">
+                  <center><a href="/finder-med" class="btn btn-outline-dark"> Find Med.</a></center>
+                </div>
+              </div>
+              <div class="col-md-3 card" style="border-color: black;width: 16rem;float: left;margin-left: 30px;border-radius: 5%;box-shadow: 0px 0px 15px 5px gray;" >
+                <img style="width: 150px;height: 150px;margin: 30px 30px 40px 40px;" class="img-card-top"src="pics/logout.png"  alt="">
+                <div class="card-body">
+                  <center><button id="logout" class="btn btn-outline-dark">Logout</button></center>
+                </div>
+              </div>
+              <div class="col-md-3 card" style="border-color: black;width: 16rem;float: left;margin-left: 30px;border-radius: 5%;box-shadow: 0px 0px 15px 5px gray;" >
+                <img style="width: 150px;height: 150px;margin: 30px 30px 40px 40px;" class="img-card-top"src="pics/setting.png"  alt="">
+                <div class="card-body">
+                  <center><button type="button" class="btn btn-outline-dark" data-bs-toggle="modal" data-bs-target="#settingmodalneedy">
+                    Settings
+                  </button></center>
+                </div>
+              </div>
+        </div>
+        
+      </div>
+    </div>
+
+    <div class="modal fade" id="settingmodalneedy" tabindex="-1" aria-labelledby="settingmodalneedy" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1 class="modal-title fs-5" id="exampleModalLabel">Settings</h1>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <form>
+            <label for="txtemail" class="form-label">Email ID</label>
+            <input type="Email" class="form-control" id="txtemail" value="" placeholder="abc@gmil.com">
+
+            <label for="txtoldpwd" class="form-label">Old Password</label>
+            <input type="text" class="form-control" id="txtoldpwd" value="" placeholder="Abc@123">
+
+            <label for="txtnewpwd" class="form-label">New Password</label>
+            <input type="password" class="form-control" id="txtnewpwd" value="" placeholder="Abc@123">
+
+            <label for="txtcnfpwd" class="form-label">Confirm Password</label>
+            <input type="password" class="form-control" id="txtcnfpwd" value="" placeholder="Abc@123">
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <button type="button" id="updatepwdneedy" class="btn btn-outline-dark">Update</button>
+            <span id="pwdres"></span>
+          </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz" crossorigin="anonymous"></script>
+  </body>
+</html>
